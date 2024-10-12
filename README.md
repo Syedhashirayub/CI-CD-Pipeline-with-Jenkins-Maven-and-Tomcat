@@ -6,9 +6,9 @@ This project demonstrates a Live AWS Resource Manager using shell scripting for 
 
 ## 📚 Table of Contents
 - [Project Overview](#project-overview)
-- [Getting Started](#getting-started)
-- [Script Explanation](#script-explanation)
-- [Setting Up a Cron Job](#setting-up-a-cron-job)
+- [Tools & Technologies Used](#tools-&-technologies-used)
+- [Project Workflow](#project-workflow)
+- [Installation & Setup](#installation-&-setup)
 - [IAM Role Configuration](#iam-role-configuration)
 - [License](#license)
 
@@ -68,17 +68,64 @@ The entire workflow includes setting up Jenkins on an EC2 instance, configuring 
    echo "export PATH=$PATH:$M2_HOME:$M2" >> ~/.bash_profile
    source ~/.bash_profile
 
-3. Configuring Jenkins for Maven
+3. **Configuring Jenkins for Maven**:
    
  - Access Jenkins through the web interface.
  - Navigate to Manage Jenkins → Global Tool Configuration.
  - Under Maven, add a new Maven installation and set the path to /opt/maven.
 
-4. Tomcat Setup on AWS EC2
+4. **Tomcat Setup on AWS EC2**:
    
  1. Launch a new EC2 instance for Tomcat.
  2. Install and configure Tomcat:
+    ```bash
+    # Install Java
+    sudo amazon-linux-extras install java-openjdk11 -y
 
+    # Download and extract Tomcat
+    cd /opt
+    sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.76/bin/apache-tomcat-9.0.76.tar.gz
+    sudo tar -xvzf apache-tomcat-9.0.76.tar.gz
+    sudo mv apache-tomcat-9.0.76 tomcat
+
+    # Start Tomcat
+    cd /opt/tomcat/bin
+    sudo ./startup.sh
+  3. Access Tomcat using the public IP of your EC2 instance on port 8080 (e.g., http://<EC2-Public-IP>:8080).
+
+  4. Configure tomcat-users.xml to enable access to the Manager App:
+     ```bash
+     <role rolename="manager-gui"/>
+     <role rolename="manager-script"/>
+     <role rolename="manager-jmx"/>
+     <role rolename="manager-status"/>
+     <user username="admin" password="admin" roles="manager-gui,manager-script,manager-jmx,manager-status"/>
+
+ 5. **CI/CD Pipeline Configuration in Jenkins**:
+  1. Install Plugins:
+
+   - Go to Manage Jenkins → Manage Plugins.
+   - Search for and install the following:
+     - Maven Integration Plugin.
+     - Deploy to Container Plugin.
+       
+  2. Create Jenkins Pipeline:
+
+   - Create a new Freestyle Project.
+   - Set up Git by adding your repository link and choosing the appropriate branch.
+   - Under Build, configure Maven to build the project using the pom.xml file (clean install).
+
+  3. Post-Build Deployment:
+
+   - Add a Post-build Action to deploy the WAR file to the Tomcat server:
+     - WAR file location: **/*.war
+     - Container: Tomcat 8.x Remote.
+     - Enter the credentials configured in tomcat-users.xml and the Tomcat server’s public IP with port 8080.
+
+  6. Automating with Poll SCM
+To automate the pipeline to run on each code change, configure Poll SCM:
+Go to Build Triggers → Check Poll SCM.
+Set the cron expression to * * * * * (runs every minute).
 
 ## ⏰ Setting Up a Cron Job
 
