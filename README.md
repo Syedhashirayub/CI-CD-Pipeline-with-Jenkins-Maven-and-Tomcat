@@ -1,8 +1,5 @@
-# 🌟 CI/CD Pipeline with Jenkins, Maven, and Tomcat
-![DALL·E 2024-10-12 20 02 56 - A dark-themed, modern illustration showing a continuous integration and continuous deployment (CI_CD) pipeline  The image should depict a flow with ar](https://github.com/user-attachments/assets/ac0e1cab-48b2-4ceb-9486-dd027023014a)
-
-
 # 🌟 Automated CI/CD Pipeline with Jenkins, Maven, and Tomcat on AWS
+![DALL·E 2024-10-12 20 02 56 - A dark-themed, modern illustration showing a continuous integration and continuous deployment (CI_CD) pipeline  The image should depict a flow with ar](https://github.com/user-attachments/assets/ac0e1cab-48b2-4ceb-9486-dd027023014a)
 
 ## 📋 Project Overview
 
