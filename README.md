@@ -22,7 +22,7 @@ The pipeline includes:
 
 ---
 
-## 🛠️  Prerequisites⚙️
+## 🛠️  Prerequisites
 
 Before setting up the pipeline, ensure you have the following:
 - AWS account with permission to create EC2 instances
