@@ -122,41 +122,46 @@ The entire workflow includes setting up Jenkins on an EC2 instance, configuring 
      - Container: Tomcat 8.x Remote.
      - Enter the credentials configured in tomcat-users.xml and the Tomcat server’s public IP with port 8080.
 
-  6. Automating with Poll SCM
-To automate the pipeline to run on each code change, configure Poll SCM:
-Go to Build Triggers → Check Poll SCM.
-Set the cron expression to * * * * * (runs every minute).
+ 6. Automating with Poll SCM
+    
+ - To automate the pipeline to run on each code change, configure Poll SCM:
+  - Go to Build Triggers → Check Poll SCM.
+  - Set the cron expression to * * * * * (runs every minute).
 
-## ⏰ Setting Up a Cron Job
+## 📜 Key Configuration Files
 
-To schedule the script to run at regular intervals, edit the crontab:
+pom.xml
+This is the Maven configuration file that defines the build steps and dependencies for the Java project.
+    ```bash
+    <project ...>
+        <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>demo-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
-1. **Edit the crontab**:
-   ```bash
-   crontab -e
-2. **Add the following line to schedule the script**:
-   ```bash
-   * * * * * /home/ec2-user/aws-resource-tracker.sh >> /home/ec2-user/log/aws-resource-output.txt 2>&1
+    <dependencies>
+        <!-- Define dependencies here -->
+    </dependencies>
+    </project>
 
-### 📝 Cron Job Breakdown:
- - '* * * * *' : Runs every minute.
- - '/home/ec2-user/aws-resource-tracker.sh' : Path to the script.
- - '>> /home/ec2-user/log/aws-resource-output.txt' : Appends output to a log file.
- - '2>&1' : Redirects error messages to the same log file.
+tomcat-users.xml
+This file defines Tomcat's roles and users.
+    ```bash
+    <role rolename="manager-gui"/>
+     <role rolename="manager-script"/>
+     <user username="admin" password="admin" roles="manager-gui,manager-script"/>
+     
+## 📝 Future Enhancements
 
-## 🛡️ IAM Role Configuration
+ - SSL Implementation: To secure communication between Jenkins and Tomcat.
+ - Automated Testing: Incorporate unit testing to ensure code quality before deployment.
+ - Docker Integration: Use Docker to containerize Jenkins, Maven, and Tomcat for easier deployment and scaling.
 
-1. **Create an IAM Role**: Ensure that the EC2 instance has the necessary permissions to access AWS services.
-Policy names to attach:
- - AmazonEC2ReadOnlyAccess
- - AmazonRDSReadOnlyAccess
- - AmazonS3ReadOnlyAccess
- - IAMReadOnlyAccess
-2. **Attach the IAM Role to the EC2 Instance**:
- - Go to the EC2 Management Console.
- - Select the instance running the script.
- - Click Actions → Security → Modify IAM role.
- - Select the IAM role you created (e.g., EC2-AWS-Resource-Tracker-Role) and click Update IAM role.
+## 🔗 Useful Links
+ - Jenkins Documentation
+ - Maven Documentation
+ - Tomcat Documentation
 
 ## 📄 License
 
